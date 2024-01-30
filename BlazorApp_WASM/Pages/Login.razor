@@ -1,0 +1,59 @@
+﻿@page "/login"
+@using System.Text.RegularExpressions;
+@using BlazorApp_WASM.Data
+@using BlazorApp_WASM.Data.Constants
+@inject NavigationManager Nav
+@inject Utilities.ILocalStorage LocalStorage
+
+<PageTitle>User Login</PageTitle>
+
+<h1>User Login</h1>
+<div class="modal-content">
+  <div class="modal-header">
+    <h5 class="modal-title">Login Form</h5>
+  </div>
+  <div class="modal-body">
+    <div class="mb-3">
+      <label for="loginEmail" class="form-label">Email</label>
+      <input type="email" class="form-control" id="loginEmail" placeholder="name@example.com" autocomplete="off" required @bind-value="user.Email" />
+    </div>
+    <div class="mb-3">
+      <label for="loginPassword" class="form-label">Password</label>
+      <input type="password" class="form-control" id="loginPassword" required @bind-value="user.Password" />
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button id="loginBtn" type="button" class="btn btn-success" @onclick="LoginAsync">Login</button>
+  </div>
+  <Popup @ref="popupRef" />
+</div>
+
+@code {
+  private User user = new User();
+  private Popup popupRef;
+
+  public async Task LoginAsync()
+  {
+    try
+    {
+      if (!IsValid())
+      {
+        popupRef.Show("Please enter valid credentials.", "Error");
+        return;
+      }
+
+      Nav.NavigateTo("/users");
+      await LocalStorage.SaveStringAsync("user", user.Email);
+    }
+    catch (Exception ex)
+    {
+      popupRef.Show(ex.Message);
+    }
+  }
+
+  private bool IsValid() => !string.IsNullOrEmpty(user.Email) &&
+  !string.IsNullOrEmpty(user.Password) &&
+  Regex.IsMatch(user.Email, AppConstants.EmailRegex, RegexOptions.IgnoreCase);
+
+}
