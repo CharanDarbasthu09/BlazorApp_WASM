@@ -1,0 +1,7 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/BlazorApp_WASM/config
+/.vs/BlazorApp_WASM/FileContentIndex
+/.vs/BlazorApp_WASM/v17/.suo
